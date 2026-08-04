@@ -22,6 +22,7 @@ const DAILY_LIMIT = 30; // AI 分析每人每天最多调用次数，防止被�
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 function jsonResponse(body: unknown, status: number) {
