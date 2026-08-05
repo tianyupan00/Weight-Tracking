@@ -61,6 +61,14 @@
   .tab-btn.active{color:var(--sage-dark);border-bottom-color:var(--sage);}
   #refreshBtn{margin-right:0;font-weight:500;}
 
+  .lang-switch{display:flex;gap:4px;flex:0 0 auto;}
+  .lang-btn{
+    background:transparent;border:1px solid var(--line);color:var(--ink-soft);
+    font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;cursor:pointer;
+  }
+  .lang-btn:hover{background:#EFF4F0;}
+  .lang-btn.active{background:var(--sage);border-color:var(--sage);color:#fff;}
+
   .cards{
     display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
     gap:10px; margin-bottom:22px;
@@ -381,89 +389,95 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">Personal Health Log</div>
-    <h1>体重追踪</h1>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div class="eyebrow">Personal Health Log</div>
+      <div class="lang-switch" id="langSwitch">
+        <button type="button" class="lang-btn" data-lang="zh">中文</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+    <h1 data-i18n="appName">体重追踪</h1>
     <p style="font-size:10.5px;color:var(--gold);margin-top:4px;">Powered by Supabase</p>
   </header>
 
   <div class="panel" id="initialLoading">
-    <div class="loading" style="margin:0;"><span class="spinner"></span> 正在加载…</div>
+    <div class="loading" style="margin:0;"><span class="spinner"></span> <span data-i18n="loadingApp">正在加载…</span></div>
   </div>
 
   <div id="authGate" style="display:none;">
     <div class="auth-card">
       <div class="auth-icon">🔑</div>
-      <h2 class="auth-title">体重追踪</h2>
-      <div class="note" id="authIntroNote">用邮箱登录，数据存在你自己的账号下。第一次用直接填邮箱密码，点"注册"就行。</div>
+      <h2 class="auth-title" data-i18n="authTitle">体重追踪</h2>
+      <div class="note" id="authIntroNote" data-i18n="authIntroDefault">用邮箱登录，数据存在你自己的账号下。第一次用直接填邮箱密码，点"注册"就行。</div>
       <div class="auth-field">
-        <label>邮箱</label>
+        <label data-i18n="emailLabel">邮箱</label>
         <input type="email" id="auth_email" autocomplete="email" placeholder="you@example.com">
       </div>
       <div class="auth-field">
-        <label>密码</label>
-        <input type="password" id="auth_password" autocomplete="current-password" placeholder="至少 6 位">
+        <label data-i18n="passwordLabel">密码</label>
+        <input type="password" id="auth_password" autocomplete="current-password" placeholder="至少 6 位" data-i18n-placeholder="passwordPlaceholder">
       </div>
-      <button type="button" id="authSignInBtn" class="auth-primary-btn">登录</button>
-      <button type="button" id="authSignUpBtn" class="auth-secondary-btn">注册新账号</button>
+      <button type="button" id="authSignInBtn" class="auth-primary-btn" data-i18n="signInBtn">登录</button>
+      <button type="button" id="authSignUpBtn" class="auth-secondary-btn" data-i18n="signUpBtn">注册新账号</button>
       <div id="authStatus" class="note" style="text-align:center;"></div>
     </div>
   </div>
 
   <!-- Shown before anything else until the person has set up their profile + goal -->
   <div class="panel" id="setupGate" style="display:none;">
-    <h2><span class="dot"></span>先填一下基本信息</h2>
-    <div class="note" id="setupIntroNote" style="margin-top:0;">这些用来算你的基础代谢和每日建议热量缺口，只填一次，之后随时可以改。</div>
+    <h2><span class="dot"></span><span data-i18n="setupHeading">先填一下基本信息</span></h2>
+    <div class="note" id="setupIntroNote" style="margin-top:0;" data-i18n="setupIntroDefault">这些用来算你的基础代谢和每日建议热量缺口，只填一次，之后随时可以改。</div>
 
-    <div style="margin-top:6px;margin-bottom:4px;font-size:12px;color:var(--sage-dark);font-weight:600;letter-spacing:.02em;">个人资料</div>
+    <div style="margin-top:6px;margin-bottom:4px;font-size:12px;color:var(--sage-dark);font-weight:600;letter-spacing:.02em;" data-i18n="profileSectionTitle">个人资料</div>
     <div class="entry-form setup-grid">
       <div>
-        <label>性别</label>
+        <label data-i18n="genderLabel">性别</label>
         <select id="p_gender" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#FCFBF8;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);">
-          <option value="female">女</option>
-          <option value="male">男</option>
+          <option value="female" data-i18n="genderFemale">女</option>
+          <option value="male" data-i18n="genderMale">男</option>
         </select>
       </div>
-      <div><label>年龄</label><input type="number" step="1" id="p_age" placeholder="岁"></div>
-      <div><label>身高 (cm)</label><input type="number" step="0.5" id="p_height"></div>
-      <div><label>当前体重 (kg)</label><input type="number" step="0.1" id="p_weight"></div>
+      <div><label data-i18n="ageLabel">年龄</label><input type="number" step="1" id="p_age" placeholder="岁" data-i18n-placeholder="agePlaceholder"></div>
+      <div><label data-i18n="heightLabel">身高 (cm)</label><input type="number" step="0.5" id="p_height"></div>
+      <div><label data-i18n="weightLabel">当前体重 (kg)</label><input type="number" step="0.1" id="p_weight"></div>
       <div style="grid-column:1/-1;">
-        <label>日常活动水平</label>
+        <label data-i18n="activityLabel">日常活动水平</label>
         <select id="p_activity" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#FCFBF8;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);">
-          <option value="sedentary">久坐（很少运动）</option>
-          <option value="light">轻度活动（每周1-3天）</option>
-          <option value="moderate">中度活动（每周3-5天）</option>
-          <option value="active">高度活动（每周6-7天）</option>
-          <option value="veryActive">非常活跃（高强度天天练）</option>
+          <option value="sedentary" data-i18n="activitySedentary">久坐（很少运动）</option>
+          <option value="light" data-i18n="activityLight">轻度活动（每周1-3天）</option>
+          <option value="moderate" data-i18n="activityModerate">中度活动（每周3-5天）</option>
+          <option value="active" data-i18n="activityActive">高度活动（每周6-7天）</option>
+          <option value="veryActive" data-i18n="activityVeryActive">非常活跃（高强度天天练）</option>
         </select>
       </div>
     </div>
 
-    <div style="margin-top:18px;margin-bottom:4px;font-size:12px;color:var(--sage-dark);font-weight:600;letter-spacing:.02em;">目标</div>
+    <div style="margin-top:18px;margin-bottom:4px;font-size:12px;color:var(--sage-dark);font-weight:600;letter-spacing:.02em;" data-i18n="goalSectionTitle">目标</div>
     <div class="entry-form setup-grid-2col">
-      <div><label>最少减 (kg)</label><input type="number" step="0.5" id="g_min" placeholder="例如 3"></div>
-      <div><label>最多减 (kg)</label><input type="number" step="0.5" id="g_max" placeholder="例如 5"></div>
+      <div><label data-i18n="goalMinLabel">最少减 (kg)</label><input type="number" step="0.5" id="g_min" placeholder="例如 3" data-i18n-placeholder="goalMinPlaceholder"></div>
+      <div><label data-i18n="goalMaxLabel">最多减 (kg)</label><input type="number" step="0.5" id="g_max" placeholder="例如 5" data-i18n-placeholder="goalMaxPlaceholder"></div>
     </div>
     <div class="goal-timing-row">
-      <div><label>用多少天</label><input type="number" step="1" id="g_days" placeholder="例如 60"></div>
-      <div class="goal-timing-or">或</div>
-      <div><label>目标日期</label><input type="date" id="g_targetDate"></div>
+      <div><label data-i18n="goalDaysLabel">用多少天</label><input type="number" step="1" id="g_days" placeholder="例如 60" data-i18n-placeholder="goalDaysPlaceholder"></div>
+      <div class="goal-timing-or" data-i18n="goalOr">或</div>
+      <div><label data-i18n="goalTargetDateLabel">目标日期</label><input type="date" id="g_targetDate"></div>
     </div>
     <div class="note" id="goalTimingPreview" style="margin-top:8px;"></div>
 
     <div class="form-actions" style="margin-top:18px;">
-      <button type="button" id="saveSetupBtn">保存，开始使用</button>
+      <button type="button" id="saveSetupBtn" data-i18n="saveSetupBtnNew">保存，开始使用</button>
     </div>
     <div id="setupStatus" class="note"></div>
 
     <div style="margin-top:22px;padding-top:16px;border-top:1px dashed var(--line);">
-      <button type="button" id="toggleDataIO" class="ghost" style="font-size:12px;padding:6px 12px;">🛟 数据备份 / 换设备</button>
+      <button type="button" id="toggleDataIO" class="ghost" style="font-size:12px;padding:6px 12px;" data-i18n="backupToggle">🛟 数据备份 / 换设备</button>
       <div id="dataIOBox" style="display:none;margin-top:12px;">
-        <div class="note" style="margin-top:0;">导出这份数据存起来（比如复制到备忘录），换个 tab 或者设备的时候粘贴回来导入，数据就跟着你走。</div>
+        <div class="note" style="margin-top:0;" data-i18n="backupNote">导出这份数据存起来（比如复制到备忘录），换个 tab 或者设备的时候粘贴回来导入，数据就跟着你走。</div>
         <textarea id="dataIOText" rows="5" style="width:100%;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:8px;font-family:monospace;font-size:12px;background:#FCFBF8;color:var(--ink);"></textarea>
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-          <button type="button" id="exportDataBtn" class="ghost">导出到上面的框</button>
-          <button type="button" id="copyDataBtn" class="ghost">导出并复制到剪贴板</button>
-          <button type="button" id="importDataBtn" class="ghost">从上面的框导入（会覆盖现有数据）</button>
+          <button type="button" id="exportDataBtn" class="ghost" data-i18n="exportBtn">导出到上面的框</button>
+          <button type="button" id="copyDataBtn" class="ghost" data-i18n="copyBtn">导出并复制到剪贴板</button>
+          <button type="button" id="importDataBtn" class="ghost" data-i18n="importBtn">从上面的框导入（会覆盖现有数据）</button>
         </div>
         <div id="dataIOStatus" class="note"></div>
       </div>
@@ -471,16 +485,16 @@
   </div>
 
   <div class="tabs" id="mainTabs" style="display:none;">
-    <button class="tab-btn active" data-page="tracker">追踪 Tracker</button>
-    <button class="tab-btn" data-page="food">食物记录 Food Log</button>
-    <button class="tab-btn" id="refreshBtn" style="margin-left:auto;">⟳ 刷新</button>
+    <button class="tab-btn active" data-page="tracker" data-i18n="tabTracker">追踪 Tracker</button>
+    <button class="tab-btn" data-page="food" data-i18n="tabFood">食物记录 Food Log</button>
+    <button class="tab-btn" id="refreshBtn" style="margin-left:auto;" data-i18n="refreshBtn">⟳ 刷新</button>
   </div>
 
   <div id="trackerMain" style="display:none;">
   <div id="page-tracker">
   <div style="display:flex;justify-content:flex-end;margin-bottom:10px;gap:8px;">
-    <button type="button" id="openSettingsBtn" class="ghost" style="font-size:12.5px;padding:7px 14px;">⚙️ 修改资料 / 目标</button>
-    <button type="button" id="signOutBtn" class="ghost" style="font-size:12.5px;padding:7px 14px;">退出登录</button>
+    <button type="button" id="openSettingsBtn" class="ghost" style="font-size:12.5px;padding:7px 14px;" data-i18n="settingsBtn">⚙️ 修改资料 / 目标</button>
+    <button type="button" id="signOutBtn" class="ghost" style="font-size:12.5px;padding:7px 14px;" data-i18n="signOutBtn">退出登录</button>
   </div>
   <div id="statCards"></div>
 
@@ -489,51 +503,51 @@
   </div>
 
   <div class="panel highlight-panel">
-    <h2><span class="dot"></span>体重变化趋势</h2>
+    <h2><span class="dot"></span><span data-i18n="trendPanelTitle">体重变化趋势</span></h2>
     <div class="chart-box"><canvas id="weightChart"></canvas></div>
   </div>
 
   <div class="panel">
-    <h2><span class="dot"></span>添加今日记录</h2>
+    <h2><span class="dot"></span><span data-i18n="addEntryPanelTitle">添加今日记录</span></h2>
     <div class="quick-entry-grid">
-      <div><label>日期</label><input type="date" id="f_date" required></div>
-      <div><label>晨起体重 (kg)</label><input type="number" step="0.1" id="f_wake" placeholder="留空=沿用已有"></div>
-      <div><label>睡前体重 (kg)</label><input type="number" step="0.1" id="f_sleep" placeholder="选填"></div>
-      <div><label>运动消耗 (cal)</label><input type="number" step="1" id="f_exercise" value="0"></div>
+      <div><label data-i18n="dateLabel">日期</label><input type="date" id="f_date" required></div>
+      <div><label data-i18n="wakeWeightLabel">晨起体重 (kg)</label><input type="number" step="0.1" id="f_wake" placeholder="留空=沿用已有" data-i18n-placeholder="wakeWeightPlaceholder"></div>
+      <div><label data-i18n="sleepWeightLabel">睡前体重 (kg)</label><input type="number" step="0.1" id="f_sleep" placeholder="选填" data-i18n-placeholder="sleepWeightPlaceholder"></div>
+      <div><label data-i18n="exerciseLabel">运动消耗 (cal)</label><input type="number" step="1" id="f_exercise" value="0"></div>
     </div>
-    <button type="button" id="toggleMoreEntryFields" class="ghost" style="margin-top:10px;font-size:12px;padding:6px 12px;">+ 更多（手动补充食物热量）</button>
+    <button type="button" id="toggleMoreEntryFields" class="ghost" style="margin-top:10px;font-size:12px;padding:6px 12px;" data-i18n="moreFieldsToggleOpen">+ 更多（手动补充食物热量）</button>
     <div id="moreEntryFields" style="display:none;margin-top:10px;max-width:220px;">
-      <label>额外食物摄入 (cal)</label><input type="number" step="1" id="f_food_manual" value="0">
+      <label data-i18n="manualFoodLabel">额外食物摄入 (cal)</label><input type="number" step="1" id="f_food_manual" value="0">
     </div>
-    <div class="form-actions" style="margin-top:14px;"><button type="button" id="saveEntryBtn">保存记录</button></div>
+    <div class="form-actions" style="margin-top:14px;"><button type="button" id="saveEntryBtn" data-i18n="saveEntryBtn">保存记录</button></div>
     <div id="entryFormStatus" class="note"></div>
   </div>
 
   <div class="panel">
-    <h2><span class="dot"></span>拍照分析食物热量</h2>
+    <h2><span class="dot"></span><span data-i18n="photoPanelTitle">拍照分析食物热量</span></h2>
     <label class="food-upload" id="uploadZone">
       <input type="file" accept="image/*,.heic,.heif" id="foodPhoto" multiple>
-      <div>📷 点击上传食物照片（可多选，也可粘贴图片）</div>
+      <div data-i18n="uploadHint">📷 点击上传食物照片（可多选，也可粘贴图片）</div>
     </label>
     <div class="photo-options-row">
       <input type="date" id="foodPhotoDate" class="plain-date-input">
-      <input type="text" id="foodPhotoNote" placeholder="补充说明（可选，比如只吃了一半）" style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;background:#FCFBF8;color:var(--ink);">
+      <input type="text" id="foodPhotoNote" placeholder="补充说明（可选，比如只吃了一半）" data-i18n-placeholder="photoNotePlaceholder" style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;background:#FCFBF8;color:var(--ink);">
     </div>
     <div id="foodAnalysisArea"></div>
   </div>
 
   <div class="panel">
-    <h2><span class="dot"></span>文字描述吃了什么</h2>
-    <textarea id="foodText" rows="3" placeholder="例如：早餐一杯燕麦牛奶+一个鸡蛋，午餐鸡胸肉沙拉，晚餐一碗牛肉面" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;background:#FCFBF8;color:var(--ink);resize:vertical;"></textarea>
+    <h2><span class="dot"></span><span data-i18n="textPanelTitle">文字描述吃了什么</span></h2>
+    <textarea id="foodText" rows="3" placeholder="例如：早餐一杯燕麦牛奶+一个鸡蛋，午餐鸡胸肉沙拉，晚餐一碗牛肉面" data-i18n-placeholder="foodTextPlaceholder" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;background:#FCFBF8;color:var(--ink);resize:vertical;"></textarea>
     <div class="photo-options-row" style="margin-top:10px;">
       <input type="date" id="foodTextDate" class="plain-date-input">
-      <button id="analyzeTextBtn" style="margin-left:auto;">AI 分析并加入记录</button>
+      <button id="analyzeTextBtn" style="margin-left:auto;" data-i18n="analyzeTextBtn">AI 分析并加入记录</button>
     </div>
     <div id="textAnalysisArea"></div>
   </div>
 
   <div class="panel">
-    <h2><span class="dot"></span>每日记录表</h2>
+    <h2><span class="dot"></span><span data-i18n="logTablePanelTitle">每日记录表</span></h2>
     <div class="table-scroll">
       <table id="logTable">
         <thead>
@@ -555,13 +569,13 @@
   <div id="page-food" style="display:none;">
 
     <div class="panel">
-      <h2><span class="dot"></span>食物记录历史</h2>
+      <h2><span class="dot"></span><span data-i18n="foodHistoryPanelTitle">食物记录历史</span></h2>
       <div class="table-scroll">
         <table id="foodHistoryTable">
           <thead>
             <tr>
-              <th>Date</th><th>食物</th><th>来源</th><th>热量 (cal)</th>
-              <th>蛋白质 (g)</th><th>碳水 (g)</th><th>脂肪 (g)</th><th></th>
+              <th>Date</th><th data-i18n="colFood">食物</th><th data-i18n="colSource">来源</th><th data-i18n="colCalories">热量 (cal)</th>
+              <th data-i18n="colProtein">蛋白质 (g)</th><th data-i18n="colCarbs">碳水 (g)</th><th data-i18n="colFat">脂肪 (g)</th><th></th>
             </tr>
           </thead>
           <tbody id="foodHistoryBody"></tbody>
@@ -578,22 +592,269 @@
 window.addEventListener('error', function(e){
   const el = document.createElement('div');
   el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#E0785C;color:#fff;padding:10px 14px;font-family:sans-serif;font-size:12px;z-index:99999;';
-  el.textContent = '页面出错了: ' + (e.message||'unknown') + ' (line ' + (e.lineno||'?') + ')';
+  el.textContent = (typeof t === 'function' ? t('pageError', {msg: e.message||'unknown', line: e.lineno||'?'}) : ('Page error: ' + (e.message||'unknown') + ' (line ' + (e.lineno||'?') + ')'));
   document.body.appendChild(el);
 });
 window.addEventListener('unhandledrejection', function(e){
   const el = document.createElement('div');
   el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#E0785C;color:#fff;padding:10px 14px;font-family:sans-serif;font-size:12px;z-index:99999;';
-  el.textContent = '后台操作出错: ' + (e.reason && e.reason.message || e.reason || 'unknown');
+  const msg = (e.reason && e.reason.message) || e.reason || 'unknown';
+  el.textContent = (typeof t === 'function' ? t('bgError', {msg}) : ('Background operation failed: ' + msg));
   document.body.appendChild(el);
 });
+
+// ============ i18n ============
+const LANG_STORAGE_KEY = 'appLang';
+let LANG = (localStorage.getItem(LANG_STORAGE_KEY) === 'en') ? 'en' : 'zh';
+
+const I18N = {
+  appName: { zh: '体重追踪', en: 'Weight Tracker' },
+  loadingApp: { zh: '正在加载…', en: 'Loading…' },
+
+  authTitle: { zh: '体重追踪', en: 'Weight Tracker' },
+  authIntroDefault: { zh: '用邮箱登录，数据存在你自己的账号下。第一次用直接填邮箱密码，点"注册"就行。', en: 'Sign in with email — your data is stored under your own account. First time here? Enter an email and password and tap "Sign Up".' },
+  authNoSupabase: { zh: '还没配置 Supabase——把代码里 SUPABASE_URL 和 SUPABASE_ANON_KEY 换成你自己项目的值。', en: 'Supabase isn\'t configured yet — replace SUPABASE_URL and SUPABASE_ANON_KEY in the code with your own project\'s values.' },
+  emailLabel: { zh: '邮箱', en: 'Email' },
+  passwordLabel: { zh: '密码', en: 'Password' },
+  passwordPlaceholder: { zh: '至少 6 位', en: 'At least 6 characters' },
+  signInBtn: { zh: '登录', en: 'Sign In' },
+  signUpBtn: { zh: '注册新账号', en: 'Create Account' },
+  authBothRequired: { zh: '邮箱和密码都要填', en: 'Email and password are both required' },
+  authSigningIn: { zh: '登录中…', en: 'Signing in…' },
+  authSigningUp: { zh: '注册中…', en: 'Signing up…' },
+  authPwTooShort: { zh: '密码至少 6 位', en: 'Password must be at least 6 characters' },
+  authSignUpSuccess: { zh: '注册成功，去邮箱点一下确认链接，然后回来登录（如果 Supabase 项目关闭了邮箱确认，直接登录就行）。', en: 'Account created — check your email for a confirmation link, then come back and sign in. (If email confirmation is disabled on your Supabase project, just sign in directly.)' },
+
+  setupHeading: { zh: '先填一下基本信息', en: 'Let\'s set up your basics' },
+  setupIntroDefault: { zh: '这些用来算你的基础代谢和每日建议热量缺口，只填一次，之后随时可以改。', en: 'We\'ll use this to calculate your metabolic rate and daily calorie target. Fill it in once — you can change it anytime.' },
+  setupIntroChanged: { zh: '改完保存，下面所有相关的数字都会重新算。', en: 'Save your changes and every related number below recalculates automatically.' },
+  profileSectionTitle: { zh: '个人资料', en: 'Profile' },
+  genderLabel: { zh: '性别', en: 'Gender' },
+  genderFemale: { zh: '女', en: 'Female' },
+  genderMale: { zh: '男', en: 'Male' },
+  ageLabel: { zh: '年龄', en: 'Age' },
+  agePlaceholder: { zh: '岁', en: 'years' },
+  heightLabel: { zh: '身高 (cm)', en: 'Height (cm)' },
+  weightLabel: { zh: '当前体重 (kg)', en: 'Current weight (kg)' },
+  activityLabel: { zh: '日常活动水平', en: 'Daily activity level' },
+  activitySedentary: { zh: '久坐（很少运动）', en: 'Sedentary (little to no exercise)' },
+  activityLight: { zh: '轻度活动（每周1-3天）', en: 'Light activity (1-3 days/week)' },
+  activityModerate: { zh: '中度活动（每周3-5天）', en: 'Moderate activity (3-5 days/week)' },
+  activityActive: { zh: '高度活动（每周6-7天）', en: 'Active (6-7 days/week)' },
+  activityVeryActive: { zh: '非常活跃（高强度天天练/体力劳动）', en: 'Very active (intense daily training / physical labor)' },
+  goalSectionTitle: { zh: '目标', en: 'Goal' },
+  goalMinLabel: { zh: '最少减 (kg)', en: 'Minimum loss (kg)' },
+  goalMinPlaceholder: { zh: '例如 3', en: 'e.g. 3' },
+  goalMaxLabel: { zh: '最多减 (kg)', en: 'Maximum loss (kg)' },
+  goalMaxPlaceholder: { zh: '例如 5', en: 'e.g. 5' },
+  goalDaysLabel: { zh: '用多少天', en: 'Over how many days' },
+  goalDaysPlaceholder: { zh: '例如 60', en: 'e.g. 60' },
+  goalOr: { zh: '或', en: 'or' },
+  goalTargetDateLabel: { zh: '目标日期', en: 'Target date' },
+  goalPreview: { zh: '大约 {days} 天，预计 {date} 达成', en: 'About {days} days — target date {date}' },
+  saveSetupBtnNew: { zh: '保存，开始使用', en: 'Save and get started' },
+  saveSetupBtnEdit: { zh: '保存修改', en: 'Save changes' },
+  setupSaving: { zh: '正在保存…', en: 'Saving…' },
+  setupSaved: { zh: '✓ 已保存', en: '✓ Saved' },
+  setupSaveFail: { zh: '✗ 保存失败了，麻烦再点一次保存', en: '✗ Save failed — please try again' },
+  profileValuesBad: { zh: '个人资料数值不太对，检查一下年龄/身高/体重～', en: 'Something\'s off with your profile numbers — double-check age/height/weight' },
+  goalValuesBad: { zh: '目标数值不太对，检查一下最少/最多减重和天数～', en: 'Something\'s off with your goal numbers — double-check min/max loss and days' },
+  backupToggle: { zh: '🛟 数据备份 / 换设备', en: '🛟 Backup / switch device' },
+  backupNote: { zh: '导出这份数据存起来（比如复制到备忘录），换个 tab 或者设备的时候粘贴回来导入，数据就跟着你走。', en: 'Export this data and save it somewhere (e.g. paste into Notes). Paste it back in on a new tab or device to bring your data with you.' },
+  exportBtn: { zh: '导出到上面的框', en: 'Export to the box above' },
+  copyBtn: { zh: '导出并复制到剪贴板', en: 'Export and copy to clipboard' },
+  importBtn: { zh: '从上面的框导入（会覆盖现有数据）', en: 'Import from the box above (overwrites existing data)' },
+  exportedNote: { zh: '已导出，复制上面的文字存起来（如果框里还是看不到文字，用旁边"复制到剪贴板"那个按钮）', en: 'Exported — copy the text above and save it somewhere (if you don\'t see it, use the "copy to clipboard" button instead)' },
+  copiedNote: { zh: '✓ 已复制到剪贴板', en: '✓ Copied to clipboard' },
+  copyFailNote: { zh: '自动复制不行，麻烦手动长按上面的文字框选复制', en: 'Auto-copy didn\'t work — press and hold the text box above to select and copy manually' },
+  importEmptyNote: { zh: '先把之前导出的文字粘贴到上面的框里', en: 'Paste your previously exported text into the box above first' },
+  importInvalidJson: { zh: '这段文字不是有效的 JSON，检查一下是不是完整复制的', en: 'That text isn\'t valid JSON — check that you copied it completely' },
+  importNoArray: { zh: '格式不对，找不到记录数组', en: 'Wrong format — couldn\'t find the entries array' },
+  importConfirm: { zh: '确定要导入 {n} 天的记录吗？这会覆盖现在已有的数据。', en: 'Import {n} days of entries? This will overwrite your current data.' },
+  importConfirmBtn: { zh: '确认导入', en: 'Confirm import' },
+  importCancelBtn: { zh: '取消', en: 'Cancel' },
+  importing: { zh: '正在导入…', en: 'Importing…' },
+  importSuccess: { zh: '✓ 导入成功', en: '✓ Import succeeded' },
+  importFail: { zh: '✗ 导入失败了，网络问题，麻烦再点一次', en: '✗ Import failed — network issue, please try again' },
+
+  tabTracker: { zh: '追踪 Tracker', en: 'Tracker' },
+  tabFood: { zh: '食物记录 Food Log', en: 'Food Log' },
+  refreshBtn: { zh: '⟳ 刷新', en: '⟳ Refresh' },
+
+  settingsBtn: { zh: '⚙️ 修改资料 / 目标', en: '⚙️ Edit profile / goal' },
+  signOutBtn: { zh: '退出登录', en: 'Sign out' },
+  trendPanelTitle: { zh: '体重变化趋势', en: 'Weight trend' },
+  addEntryPanelTitle: { zh: '添加今日记录', en: 'Add today\'s entry' },
+  dateLabel: { zh: '日期', en: 'Date' },
+  wakeWeightLabel: { zh: '晨起体重 (kg)', en: 'Morning weight (kg)' },
+  wakeWeightPlaceholder: { zh: '留空=沿用已有', en: 'Leave blank to keep existing' },
+  sleepWeightLabel: { zh: '睡前体重 (kg)', en: 'Evening weight (kg)' },
+  sleepWeightPlaceholder: { zh: '选填', en: 'Optional' },
+  exerciseLabel: { zh: '运动消耗 (cal)', en: 'Exercise burned (cal)' },
+  moreFieldsToggleOpen: { zh: '+ 更多（手动补充食物热量）', en: '+ More (manually add food calories)' },
+  moreFieldsToggleClose: { zh: '− 收起', en: '− Collapse' },
+  manualFoodLabel: { zh: '额外食物摄入 (cal)', en: 'Extra food intake (cal)' },
+  saveEntryBtn: { zh: '保存记录', en: 'Save entry' },
+  dateRequired: { zh: '先选一下日期～', en: 'Please pick a date first' },
+  firstEntryNeedsWake: { zh: '第一次记录需要填一下晨起体重～', en: 'Your first entry needs a morning weight' },
+  entrySaving: { zh: '正在保存…', en: 'Saving…' },
+  entrySaved: { zh: '✓ 已保存 {date}', en: '✓ Saved {date}' },
+  entrySaveFail: { zh: '✗ 保存失败了，网络或服务器的问题，麻烦再点一次保存～（你填的内容还在，不用重新输入）', en: '✗ Save failed — a network or server issue, please try again (what you typed is still there, no need to retype)' },
+
+  photoPanelTitle: { zh: '拍照分析食物热量', en: 'Analyze food calories from a photo' },
+  uploadHint: { zh: '📷 点击上传食物照片（可多选，也可粘贴图片）', en: '📷 Tap to upload food photos (multiple allowed, pasting also works)' },
+  photoNotePlaceholder: { zh: '补充说明（可选，比如只吃了一半）', en: 'Notes (optional, e.g. "only ate half")' },
+  processingPhoto: { zh: '正在处理照片…', en: 'Processing photo…' },
+  photoConvertFail: { zh: '图片转换失败，请重试', en: 'Image conversion failed, please try again' },
+  heicUnsupported: { zh: '这张照片的格式无法识别（可能是 HEIC，当前浏览器不支持解码）。可以在手机相册里把它转成 JPEG/PNG 再上传，或者在拍照设置里把格式改成"兼容性最佳"。', en: 'This photo\'s format couldn\'t be recognized (it might be HEIC, which this browser can\'t decode). Try converting it to JPEG/PNG in your Photos app first, or switch your camera format setting to "Most Compatible".' },
+  photoReadFail: { zh: '读取照片失败，请重试', en: 'Failed to read the photo, please try again' },
+  photoReadyNote: { zh: '照片已选好，可以先在上面的"补充说明"里写清楚实际吃法，再点下面开始分析。这条说明会用在这张照片上。', en: 'Photo selected — you can fill in "Notes" above with how you actually ate it before analyzing. That note will apply to this photo.' },
+  startAnalyzeBtn: { zh: '开始分析', en: 'Analyze' },
+  removeBtn: { zh: '移除', en: 'Remove' },
+  analyzingFood: { zh: '正在分析这份食物…', en: 'Analyzing this food…' },
+  notedText: { zh: '已带上你的说明："{note}"', en: 'Included your note: "{note}"' },
+  retryBtn: { zh: '重试', en: 'Retry' },
+  analyzeFailPrefix: { zh: '分析失败：', en: 'Analysis failed: ' },
+  pleaseRetry: { zh: '请重试', en: 'please try again' },
+
+  textPanelTitle: { zh: '文字描述吃了什么', en: 'Describe what you ate' },
+  foodTextPlaceholder: { zh: '例如：早餐一杯燕麦牛奶+一个鸡蛋，午餐鸡胸肉沙拉，晚餐一碗牛肉面', en: 'e.g. "Breakfast: oatmeal with milk and an egg. Lunch: chicken breast salad. Dinner: a bowl of beef noodle soup."' },
+  analyzeTextBtn: { zh: 'AI 分析并加入记录', en: 'Analyze with AI and add entry' },
+  textDescribeFirst: { zh: '先描述一下吃了什么～', en: 'Describe what you ate first' },
+  analyzing: { zh: '正在分析…', en: 'Analyzing…' },
+
+  logTablePanelTitle: { zh: '每日记录表', en: 'Daily log' },
+  tableNoEntries: { zh: '还没有记录，先在上面添加今天的数据吧', en: 'No entries yet — add today\'s data above to get started' },
+  tableFootnote: { zh: 'TDEE 列 = 久坐基线(BMR×1.2) + 当日运动消耗，避免与"中度活动"系数重复计算，比固定 TDEE 更贴近每日实际情况。估算减脂按 7700 cal = 1kg 脂肪换算，仅供参考。', en: 'TDEE column = sedentary baseline (BMR×1.2) + that day\'s exercise burn — this avoids double-counting a "moderate activity" multiplier and tracks daily reality more closely than a fixed TDEE. Estimated fat loss uses 7700 cal = 1kg fat as a rough reference only.' },
+  lcWake: { zh: '晨起', en: 'Wake' },
+  lcSleep: { zh: '睡前', en: 'Bed' },
+  lcVsYesterday: { zh: '· 较昨日 ', en: '· vs yesterday ' },
+  lcSameDay: { zh: ' · 同日 ', en: ' · same-day ' },
+  lcIntake: { zh: '摄入', en: 'Intake' },
+  lcExercise: { zh: '运动', en: 'Exercise' },
+
+  foodHistoryPanelTitle: { zh: '食物记录历史', en: 'Food log history' },
+  colFood: { zh: '食物', en: 'Food' },
+  colSource: { zh: '来源', en: 'Source' },
+  colCalories: { zh: '热量 (cal)', en: 'Calories (cal)' },
+  colProtein: { zh: '蛋白质 (g)', en: 'Protein (g)' },
+  colCarbs: { zh: '碳水 (g)', en: 'Carbs (g)' },
+  colFat: { zh: '脂肪 (g)', en: 'Fat (g)' },
+  foodHistoryEmpty: { zh: '还没有食物记录 — 拍张照片或者打字描述一下吃了什么吧', en: 'No food entries yet — snap a photo or type what you ate' },
+  foodHistoryNote: { zh: '共 {n} 条食物记录，累计 {cal} cal（不含手动补充的食物热量，那部分在追踪页的每日记录表里）。日期可以直接点开改，改完会自动挪到对应那天，追踪页的统计也会跟着重新计算。', en: '{n} food entries in total, {cal} cal cumulative (excludes manually-added calories, which live in the daily log on the Tracker tab). Tap a date to edit it — the entry moves to that day automatically and the Tracker stats recalculate.' },
+
+  statGroupWeight: { zh: '体重进度', en: 'Weight progress' },
+  statGroupCalorie: { zh: '热量计划', en: 'Calorie plan' },
+  statCurrentWeight: { zh: '当前体重', en: 'Current weight' },
+  statCurrentWeightSub: { zh: '起始 {start} kg · 已减 {lost} kg', en: 'Started at {start} kg · Lost {lost} kg' },
+  statGoalProgress: { zh: '目标完成度', en: 'Goal progress' },
+  statGoalProgressSub: { zh: '已减 {lost} / 目标约 {avg} kg', en: 'Lost {lost} / goal ~{avg} kg' },
+  statGoal: { zh: '目标', en: 'Goal' },
+  statGoalValue: { zh: '-{min}~{max} kg · {days} 天', en: '-{min}~{max} kg · {days} days' },
+  statGoalSub: { zh: '累计需缺口 {min}–{max} cal', en: 'Cumulative deficit needed: {min}–{max} cal' },
+  statDailyDeficit: { zh: '建议每日缺口', en: 'Suggested daily deficit' },
+  statDailyDeficitSub: { zh: '范围 {min}–{max} cal', en: 'Range {min}–{max} cal' },
+  statReferenceTDEE: { zh: '参考 TDEE（{activity}）', en: 'Reference TDEE ({activity})' },
+  statReferenceTDEESub: { zh: '按当前体重 {weight}kg 计算', en: 'Based on current weight {weight}kg' },
+  statBMR: { zh: '基础代谢 BMR', en: 'Basal metabolic rate (BMR)' },
+
+  progressOverview: { zh: '进度总览', en: 'Progress overview' },
+  totalDeficit: { zh: '累计热量缺口', en: 'Cumulative calorie deficit' },
+  avgDeficit: { zh: '日均缺口', en: 'Average daily deficit' },
+  avgDeficitUnit: { zh: 'cal/天', en: 'cal/day' },
+  estLoss: { zh: '按缺口估算已减脂', en: 'Estimated fat lost (from deficit)' },
+  progressGoalLabel: { zh: '目标 {min}–{max} kg', en: 'Goal {min}–{max} kg' },
+  statusBelow: { zh: '距目标区间还差 <b>{n} kg</b>', en: '<b>{n} kg</b> to reach your goal range' },
+  statusInRange: { zh: '🎉 已经进入目标区间 <b>{min}–{max} kg</b>', en: '🎉 You\'re in your goal range! <b>{min}–{max} kg</b>' },
+  statusAbove: { zh: '已超过目标上限，<b>做得很好</b>', en: 'You\'ve exceeded your goal — <b>great work!</b>' },
+
+  chartLabel: { zh: '晨起体重 (kg)', en: 'Morning weight (kg)' },
+
+  sourcePhoto: { zh: '📷 照片', en: '📷 Photo' },
+  sourceText: { zh: '📝 文字', en: '📝 Text' },
+  fhMacros: { zh: '蛋白 {p}g · 碳水 {c}g · 脂肪 {f}g', en: 'Protein {p}g · Carbs {c}g · Fat {f}g' },
+
+  calLabel: { zh: '热量 cal', en: 'Calories cal' },
+  proteinLabel: { zh: '蛋白质', en: 'Protein' },
+  carbsLabel: { zh: '碳水', en: 'Carbs' },
+  fatLabel: { zh: '脂肪', en: 'Fat' },
+  originalEstimateNote: { zh: '（原份量估算：{cal} cal，按 {pct}% 计算）', en: '(Full-portion estimate: {cal} cal, scaled to {pct}%)' },
+  portionQuestion: { zh: '这次实际吃了这份食物的多少？', en: 'How much of this did you actually eat?' },
+  portionFull: { zh: '全份', en: 'Full portion' },
+  portionApprox: { zh: '约 {p}%', en: '~{p}%' },
+  portionCustom: { zh: '自定义%', en: 'Custom %' },
+  portionCustomPlaceholder: { zh: '例如 60', en: 'e.g. 60' },
+  addToTodayBtn: { zh: '加入今天的记录', en: 'Add to today\'s entry' },
+  redoAnalyzeBtn: { zh: '改了说明？重新分析', en: 'Changed the note? Re-analyze' },
+  addedToDate: { zh: '已加入 {date} 的食物记录 ✓', en: 'Added to {date}\'s food log ✓' },
+  portionSuffix: { zh: '（{pct}%）', en: ' ({pct}%)' },
+
+  aiPhotoPromptBase: { zh: '你是一名营养师。请识别这张图片里的食物，估算总热量(kcal)和蛋白质/碳水/脂肪克数。', en: 'You are a nutritionist. Identify the food in this image and estimate total calories (kcal) and protein/carbs/fat in grams.' },
+  aiPhotoPromptWithNote: { zh: '用户补充说明："{note}"——请把这条说明也纳入计算（比如实际份量、是否吃了全部、有没有去掉某些部分），估算要以说明为准，不要只按照片里的全部食物量估算。', en: 'User\'s note: "{note}" — factor this into your estimate (e.g. actual portion eaten, whether they finished it, anything left out). Base your estimate on the note, not just the full amount shown in the photo.' },
+  aiPhotoPromptNoNote: { zh: '请估算这一整份(照片里全部的量)的总热量。', en: 'Estimate the total calories for the entire portion shown in the photo.' },
+  aiPhotoJsonInstruction: { zh: ' 只返回严格的 JSON，不要任何前言、解释或 markdown 代码块，格式为: {"name":"食物名称(中文，简短)","calories":数字,"protein":数字,"carbs":数字,"fat":数字,"note":"一句话说明估算依据，比如份量假设或者是怎么结合补充说明调整的"}', en: ' Return ONLY strict JSON, no preamble, explanation, or markdown code fences, in this format: {"name":"short food name (in English)","calories":number,"protein":number,"carbs":number,"fat":number,"note":"one sentence explaining your estimate, e.g. portion assumptions or how you factored in the note"}' },
+  aiTextPromptTemplate: { zh: '你是一名营养师。根据下面这段描述，识别里面提到的每一样食物，估算总热量(kcal)和总蛋白质/碳水/脂肪克数(把描述里的所有食物合并成一份总计)。只返回严格的 JSON，不要任何前言、解释或 markdown 代码块，格式为: {"name":"简短总结这顿吃了什么(中文)","calories":数字,"protein":数字,"carbs":数字,"fat":数字,"note":"一句话说明估算依据，比如份量假设"}\n\n描述：{desc}', en: 'You are a nutritionist. Based on the description below, identify each food mentioned and estimate total calories (kcal) and total protein/carbs/fat in grams (combine everything into one total). Return ONLY strict JSON, no preamble, explanation, or markdown code fences, in this format: {"name":"short summary of what was eaten (in English)","calories":number,"protein":number,"carbs":number,"fat":number,"note":"one sentence explaining your estimate, e.g. portion assumptions"}\n\nDescription: {desc}' },
+
+  needLogin: { zh: '请先登录再使用 AI 分析', en: 'Please sign in first to use AI analysis' },
+  aiRequestFail: { zh: 'AI 接口请求失败 (状态码 {status})', en: 'AI request failed (status {status})' },
+  aiParseError: { zh: 'AI 返回格式无法解析，请重试', en: 'Couldn\'t parse the AI response, please try again' },
+  networkIssueRetry: { zh: '，网络问题，麻烦重试', en: ' — a network issue, please try again' },
+
+  pageError: { zh: '页面出错了: {msg} (line {line})', en: 'Page error: {msg} (line {line})' },
+  bgError: { zh: '后台操作出错: {msg}', en: 'Background operation failed: {msg}' },
+};
+
+function t(key, vars){
+  const entry = I18N[key];
+  let s = entry ? (entry[LANG] || entry.zh) : key;
+  if(vars){
+    Object.keys(vars).forEach(k=>{ s = s.split('{'+k+'}').join(vars[k]); });
+  }
+  return s;
+}
+
+function applyStaticI18n(){
+  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh';
+  document.title = t('appName');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === LANG);
+  });
+}
+
+function setLang(lang){
+  LANG = (lang === 'en') ? 'en' : 'zh';
+  localStorage.setItem(LANG_STORAGE_KEY, LANG);
+  applyStaticI18n();
+  if(document.getElementById('trackerMain').style.display !== 'none'){
+    render();
+  }
+  if(document.getElementById('setupGate').style.display !== 'none'){
+    const onboarded = PROFILE.hasProfile && PROFILE.hasGoal;
+    document.getElementById('setupIntroNote').textContent = onboarded ? t('setupIntroChanged') : t('setupIntroDefault');
+    document.getElementById('saveSetupBtn').textContent = onboarded ? t('saveSetupBtnEdit') : t('saveSetupBtnNew');
+    updateGoalPreview();
+  }
+}
+
+document.getElementById('langSwitch').addEventListener('click', function(ev){
+  const btn = ev.target.closest('.lang-btn');
+  if(!btn) return;
+  setLang(btn.dataset.lang);
+});
+applyStaticI18n();
 
 const ACTIVITY_MULTIPLIERS = {
   sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, veryActive: 1.9
 };
-const ACTIVITY_LABELS = {
-  sedentary: '久坐（很少运动）', light: '轻度活动（每周1-3天）', moderate: '中度活动（每周3-5天）',
-  active: '高度活动（每周6-7天）', veryActive: '非常活跃（高强度天天练/体力劳动）'
+const ACTIVITY_LABEL_KEYS = {
+  sedentary: 'activitySedentary', light: 'activityLight', moderate: 'activityModerate',
+  active: 'activityActive', veryActive: 'activityVeryActive'
 };
 
 const PROFILE = {
@@ -648,7 +909,7 @@ const AI_PROXY_URL = `${SUPABASE_URL}/functions/v1/analyze-food`;
 async function callAiProxy(messages, maxTokens = 1000){
   const { data: { session } } = await sb.auth.getSession();
   if(!session){
-    throw new Error('请先登录再使用 AI 分析');
+    throw new Error(t('needLogin'));
   }
 
   const response = await fetch(AI_PROXY_URL, {
@@ -660,7 +921,8 @@ async function callAiProxy(messages, maxTokens = 1000){
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
       max_tokens: maxTokens,
-      messages
+      messages,
+      lang: LANG
     })
   });
 
@@ -668,7 +930,7 @@ async function callAiProxy(messages, maxTokens = 1000){
     const errBody = await response.text().catch(()=> '');
     let msg = errBody;
     try{ msg = JSON.parse(errBody).error || errBody; }catch{}
-    throw new Error(`AI 接口请求失败 (状态码 ${response.status})${msg ? '：' + msg.slice(0,200) : '，网络问题，麻烦重试'}`);
+    throw new Error(t('aiRequestFail', {status: response.status}) + (msg ? '：' + msg.slice(0,200) : t('networkIssueRetry')));
   }
 
   const data = await response.json();
@@ -677,7 +939,7 @@ async function callAiProxy(messages, maxTokens = 1000){
   try{
     return JSON.parse(clean);
   }catch(parseErr){
-    throw new Error('AI 返回格式无法解析，请重试');
+    throw new Error(t('aiParseError'));
   }
 }
 
@@ -686,7 +948,7 @@ function requireSupabase(){
     document.getElementById('initialLoading').style.display = 'none';
     document.getElementById('authGate').style.display = 'block';
     document.getElementById('authIntroNote').innerHTML =
-      `<span class="err">还没配置 Supabase——把代码里 SUPABASE_URL 和 SUPABASE_ANON_KEY 换成你自己项目的值。</span>`;
+      `<span class="err">${t('authNoSupabase')}</span>`;
     return false;
   }
   return true;
@@ -876,16 +1138,17 @@ function renderStats(){
   const pct = avgGoalKg > 0 ? Math.max(0, (lost/avgGoalKg*100)) : 0;
   const stats = statsFor(currentWeight);
 
+  const activityLabel = t(ACTIVITY_LABEL_KEYS[PROFILE.activityLevel] || 'activityModerate');
   const weightCards = [
-    {label:'当前体重', value: currentWeight.toFixed(1)+' kg', sub:`起始 ${PROFILE.startWeight} kg · 已减 ${lost.toFixed(1)} kg`, accent:true},
-    {label:'目标完成度', value: pct.toFixed(0)+'%', sub:`已减 ${lost.toFixed(1)} / 目标约 ${avgGoalKg} kg`},
+    {label:t('statCurrentWeight'), value: currentWeight.toFixed(1)+' kg', sub:t('statCurrentWeightSub',{start:PROFILE.startWeight, lost:lost.toFixed(1)}), accent:true},
+    {label:t('statGoalProgress'), value: pct.toFixed(0)+'%', sub:t('statGoalProgressSub',{lost:lost.toFixed(1), avg:avgGoalKg})},
   ];
   const calorieCards = [
-    {label:'目标', value: `-${PROFILE.goalMinKg}~${PROFILE.goalMaxKg} kg · ${PROFILE.goalDays} 天`,
-     sub:`累计需缺口 ${dr.totalMin.toLocaleString()}–${dr.totalMax.toLocaleString()} cal`},
-    {label:'建议每日缺口', value: dr.target+' cal', sub:`范围 ${dr.min}–${dr.max} cal`},
-    {label:`参考 TDEE（${ACTIVITY_LABELS[PROFILE.activityLevel]||'中度活动'}）`, value: stats.referenceTDEE+' cal', sub:`按当前体重 ${currentWeight.toFixed(1)}kg 计算`},
-    {label:'基础代谢 BMR', value: stats.bmr+' cal', sub:'Mifflin-St Jeor'},
+    {label:t('statGoal'), value: t('statGoalValue',{min:PROFILE.goalMinKg, max:PROFILE.goalMaxKg, days:PROFILE.goalDays}),
+     sub:t('statGoalSub',{min:dr.totalMin.toLocaleString(), max:dr.totalMax.toLocaleString()})},
+    {label:t('statDailyDeficit'), value: dr.target+' cal', sub:t('statDailyDeficitSub',{min:dr.min, max:dr.max})},
+    {label:t('statReferenceTDEE',{activity:activityLabel}), value: stats.referenceTDEE+' cal', sub:t('statReferenceTDEESub',{weight:currentWeight.toFixed(1)})},
+    {label:t('statBMR'), value: stats.bmr+' cal', sub:'Mifflin-St Jeor'},
   ];
 
   const renderGroup = (title, cards) => `
@@ -900,7 +1163,7 @@ function renderStats(){
     </div>`;
 
   document.getElementById('statCards').innerHTML =
-    renderGroup('体重进度', weightCards) + renderGroup('热量计划', calorieCards);
+    renderGroup(t('statGroupWeight'), weightCards) + renderGroup(t('statGroupCalorie'), calorieCards);
 }
 
 function openSetupGate(){
@@ -917,9 +1180,9 @@ function openSetupGate(){
   document.getElementById('g_targetDate').value = '';
   syncGoalDaysToDate();
   document.getElementById('setupIntroNote').textContent = (PROFILE.hasProfile && PROFILE.hasGoal)
-    ? '改完保存，下面所有相关的数字都会重新算。'
-    : '这些用来算你的基础代谢和每日建议热量缺口，只填一次，之后随时可以改。';
-  document.getElementById('saveSetupBtn').textContent = (PROFILE.hasProfile && PROFILE.hasGoal) ? '保存修改' : '保存，开始使用';
+    ? t('setupIntroChanged')
+    : t('setupIntroDefault');
+  document.getElementById('saveSetupBtn').textContent = (PROFILE.hasProfile && PROFILE.hasGoal) ? t('saveSetupBtnEdit') : t('saveSetupBtnNew');
   if(typeof gate.scrollIntoView === 'function'){
     gate.scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -942,7 +1205,7 @@ function updateGoalPreview(){
   const dateStr = document.getElementById('g_targetDate').value;
   const preview = document.getElementById('goalTimingPreview');
   if(!isNaN(days) && days>0 && dateStr){
-    preview.textContent = `大约 ${days} 天，预计 ${dateStr} 达成`;
+    preview.textContent = t('goalPreview', {days, date: dateStr});
   } else {
     preview.textContent = '';
   }
@@ -968,8 +1231,8 @@ function renderTable(){
   const cardsEl = document.getElementById('logCards');
   const summaryPanel = document.getElementById('deficitSummary').closest('.panel');
   if(entries.length===0){
-    body.innerHTML = `<tr><td colspan="10" class="empty">还没有记录，先在上面添加今天的数据吧</td></tr>`;
-    cardsEl.innerHTML = `<div class="empty">还没有记录，先在上面添加今天的数据吧</div>`;
+    body.innerHTML = `<tr><td colspan="10" class="empty">${t('tableNoEntries')}</td></tr>`;
+    cardsEl.innerHTML = `<div class="empty">${t('tableNoEntries')}</div>`;
     document.getElementById('tableNote').textContent='';
     document.getElementById('deficitSummary').innerHTML='';
     if(summaryPanel) summaryPanel.style.display = 'none';
@@ -1006,14 +1269,14 @@ function renderTable(){
         <div class="lc-deficit-badge ${def>=0?'pos':'neg'}">${def>=0?'+':''}${def} cal</div>
       </div>
       <div class="lc-weight-line">
-        晨起 <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.wake.toFixed(1)}" onchange="updateEntryField('${e.date}','wake',this.value)">kg
-        · 睡前 <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.sleep!=null && e.sleep!=='' ? Number(e.sleep).toFixed(1) : ''}" placeholder="—" onchange="updateEntryField('${e.date}','sleep',this.value)">kg
-        <span class="lc-change">${prev ? '· 较昨日 '+(change>=0?'+':'')+change.toFixed(1)+'kg' : ''}${sameDay!=null ? ' · 同日 '+(sameDay>=0?'+':'')+sameDay.toFixed(1)+'kg' : ''}</span>
+        ${t('lcWake')} <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.wake.toFixed(1)}" onchange="updateEntryField('${e.date}','wake',this.value)">kg
+        · ${t('lcSleep')} <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.sleep!=null && e.sleep!=='' ? Number(e.sleep).toFixed(1) : ''}" placeholder="—" onchange="updateEntryField('${e.date}','sleep',this.value)">kg
+        <span class="lc-change">${prev ? t('lcVsYesterday')+(change>=0?'+':'')+change.toFixed(1)+'kg' : ''}${sameDay!=null ? t('lcSameDay')+(sameDay>=0?'+':'')+sameDay.toFixed(1)+'kg' : ''}</span>
       </div>
       <div class="lc-stats-row">
         <div class="lc-stat"><span class="lc-stat-label">TDEE</span><span class="lc-stat-val">${exp}</span></div>
-        <div class="lc-stat"><span class="lc-stat-label">摄入</span><span class="lc-stat-val">${food}</span></div>
-        <div class="lc-stat"><span class="lc-stat-label">运动</span><span class="lc-stat-val"><input type="number" step="1" class="inline-edit" style="width:38px;text-align:center;" value="${e.exercise||0}" onchange="updateEntryField('${e.date}','exercise',this.value)"></span></div>
+        <div class="lc-stat"><span class="lc-stat-label">${t('lcIntake')}</span><span class="lc-stat-val">${food}</span></div>
+        <div class="lc-stat"><span class="lc-stat-label">${t('lcExercise')}</span><span class="lc-stat-val"><input type="number" step="1" class="inline-edit" style="width:38px;text-align:center;" value="${e.exercise||0}" onchange="updateEntryField('${e.date}','exercise',this.value)"></span></div>
       </div>
     </div>`);
   });
@@ -1031,35 +1294,35 @@ function renderTable(){
 
   let statusHtml;
   if(estLossKg < PROFILE.goalMinKg){
-    statusHtml = `距目标区间还差 <b>${(PROFILE.goalMinKg-estLossKg).toFixed(1)} kg</b>`;
+    statusHtml = t('statusBelow', {n:(PROFILE.goalMinKg-estLossKg).toFixed(1)});
   } else if(estLossKg <= PROFILE.goalMaxKg){
-    statusHtml = `🎉 已经进入目标区间 <b>${PROFILE.goalMinKg}–${PROFILE.goalMaxKg} kg</b>`;
+    statusHtml = t('statusInRange', {min:PROFILE.goalMinKg, max:PROFILE.goalMaxKg});
   } else {
-    statusHtml = `已超过目标上限，<b>做得很好</b>`;
+    statusHtml = t('statusAbove');
   }
 
   if(summaryPanel) summaryPanel.style.display = '';
   document.getElementById('deficitSummary').innerHTML = `
-    <h2><span class="dot"></span>进度总览</h2>
+    <h2><span class="dot"></span>${t('progressOverview')}</h2>
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-icon">🔥</div>
-        <div class="summary-label">累计热量缺口</div>
+        <div class="summary-label">${t('totalDeficit')}</div>
         <div class="summary-value">${totalDeficit>=0?'+':''}${totalDeficit}<span class="unit">cal</span></div>
       </div>
       <div class="summary-card">
         <div class="summary-icon">📊</div>
-        <div class="summary-label">日均缺口</div>
-        <div class="summary-value ${avgDeficit>=0?'pos':'neg'}">${avgDeficit>=0?'+':''}${avgDeficit}<span class="unit">cal/天</span></div>
+        <div class="summary-label">${t('avgDeficit')}</div>
+        <div class="summary-value ${avgDeficit>=0?'pos':'neg'}">${avgDeficit>=0?'+':''}${avgDeficit}<span class="unit">${t('avgDeficitUnit')}</span></div>
       </div>
       <div class="summary-card">
         <div class="summary-icon">⚖️</div>
-        <div class="summary-label">按缺口估算已减脂</div>
+        <div class="summary-label">${t('estLoss')}</div>
         <div class="summary-value pos">${estLossKg.toFixed(2)}<span class="unit">kg</span></div>
       </div>
     </div>
     <div class="progress-wrap">
-      <div class="progress-labels"><span>0 kg</span><span>目标 ${PROFILE.goalMinKg}–${PROFILE.goalMaxKg} kg</span></div>
+      <div class="progress-labels"><span>0 kg</span><span>${t('progressGoalLabel', {min:PROFILE.goalMinKg, max:PROFILE.goalMaxKg})}</span></div>
       <div class="progress-track">
         <div class="progress-zone" style="left:${zoneStart}%;width:${zoneWidth}%;"></div>
         <div class="progress-fill" style="width:${fillPct}%;"></div>
@@ -1067,8 +1330,7 @@ function renderTable(){
       <div class="progress-status">${statusHtml}</div>
     </div>`;
 
-  document.getElementById('tableNote').textContent =
-    'TDEE 列 = 久坐基线(BMR×1.2) + 当日运动消耗，避免与"中度活动"系数重复计算，比固定 TDEE 更贴近每日实际情况。估算减脂按 7700 cal = 1kg 脂肪换算，仅供参考。';
+  document.getElementById('tableNote').textContent = t('tableFootnote');
 }
 
 function renderChart(){
@@ -1087,7 +1349,7 @@ function renderChart(){
     data:{
       labels,
       datasets:[{
-        label:'晨起体重 (kg)',
+        label:t('chartLabel'),
         data,
         borderColor:'#7C9885',
         backgroundColor:'rgba(124,152,133,0.12)',
@@ -1120,8 +1382,8 @@ function render(){
 }
 
 function sourceLabel(s){
-  if(s==='photo') return '📷 照片';
-  if(s==='text') return '📝 文字';
+  if(s==='photo') return t('sourcePhoto');
+  if(s==='text') return t('sourceText');
   return '—';
 }
 
@@ -1136,8 +1398,8 @@ function renderFoodHistory(){
     });
   });
   if(rows.length===0){
-    body.innerHTML = `<tr><td colspan="8" class="empty">还没有食物记录 — 拍张照片或者打字描述一下吃了什么吧</td></tr>`;
-    cardsEl.innerHTML = `<div class="empty">还没有食物记录 — 拍张照片或者打字描述一下吃了什么吧</div>`;
+    body.innerHTML = `<tr><td colspan="8" class="empty">${t('foodHistoryEmpty')}</td></tr>`;
+    cardsEl.innerHTML = `<div class="empty">${t('foodHistoryEmpty')}</div>`;
     document.getElementById('foodHistoryNote').textContent='';
     return;
   }
@@ -1158,7 +1420,7 @@ function renderFoodHistory(){
       <div class="fh-main">
         <input type="date" class="fh-date-input" value="${r.date}" onchange="moveFoodItemDate('${r.entryDate}',${r.idx},this.value)"> · ${sourceLabel(r.item.source)}
         <div class="fh-name">${r.item.name}</div>
-        <div class="fh-macros">蛋白 ${r.item.protein!=null?r.item.protein:'—'}g · 碳水 ${r.item.carbs!=null?r.item.carbs:'—'}g · 脂肪 ${r.item.fat!=null?r.item.fat:'—'}g</div>
+        <div class="fh-macros">${t('fhMacros',{p:r.item.protein!=null?r.item.protein:'—', c:r.item.carbs!=null?r.item.carbs:'—', f:r.item.fat!=null?r.item.fat:'—'})}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div class="fh-cal">${r.item.cal}<span class="unit"> cal</span></div>
@@ -1168,7 +1430,7 @@ function renderFoodHistory(){
 
   const totalCal = rows.reduce((s,r)=>s+(r.item.cal||0),0);
   document.getElementById('foodHistoryNote').textContent =
-    `共 ${rows.length} 条食物记录，累计 ${totalCal} cal（不含手动补充的食物热量，那部分在追踪页的每日记录表里）。日期可以直接点开改，改完会自动挪到对应那天，追踪页的统计也会跟着重新计算。`;
+    t('foodHistoryNote', {n: rows.length, cal: totalCal});
 }
 
 // Moves a food item from one day's entry to another (or creates the target day
@@ -1230,7 +1492,7 @@ document.getElementById('saveEntryBtn').addEventListener('click', async function
   const exercise = parseFloat(document.getElementById('f_exercise').value)||0;
   const foodManual = parseFloat(document.getElementById('f_food_manual').value)||0;
   if(!date){
-    statusEl.innerHTML = `<span class="err">先选一下日期～</span>`;
+    statusEl.innerHTML = `<span class="err">${t('dateRequired')}</span>`;
     return;
   }
   const existing = entries.find(e=>e.date===date);
@@ -1244,12 +1506,12 @@ document.getElementById('saveEntryBtn').addEventListener('click', async function
     wake = entries[entries.length-1].wake; // new day, carry forward the last known weight
   }
   if(wake == null || isNaN(wake)){
-    statusEl.innerHTML = `<span class="err">第一次记录需要填一下晨起体重～</span>`;
+    statusEl.innerHTML = `<span class="err">${t('firstEntryNeedsWake')}</span>`;
     return;
   }
 
   btn.disabled = true;
-  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> 正在保存…</span>`;
+  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> ${t('entrySaving')}</span>`;
 
   let ok = false;
   try{
@@ -1272,9 +1534,9 @@ document.getElementById('saveEntryBtn').addEventListener('click', async function
     document.getElementById('f_exercise').value = 0;
     document.getElementById('f_food_manual').value = 0;
     document.getElementById('f_date').value = easternToday();
-    statusEl.innerHTML = `<span style="color:var(--sage-dark);">✓ 已保存 ${date}</span>`;
+    statusEl.innerHTML = `<span style="color:var(--sage-dark);">${t('entrySaved',{date})}</span>`;
   } else {
-    statusEl.innerHTML = `<span class="err">✗ 保存失败了，网络或服务器的问题，麻烦再点一次保存～（你填的内容还在，不用重新输入）</span>`;
+    statusEl.innerHTML = `<span class="err">${t('entrySaveFail')}</span>`;
   }
 });
 
@@ -1299,16 +1561,16 @@ function normalizeImageToJpeg(file){
         try{
           resolve(canvas.toDataURL('image/jpeg', 0.9));
         }catch(e){
-          reject(new Error('图片转换失败，请重试'));
+          reject(new Error(t('photoConvertFail')));
         }
       };
       img.onerror = ()=>{
-        reject(new Error('这张照片的格式无法识别（可能是 HEIC，当前浏览器不支持解码）。可以在手机相册里把它转成 JPEG/PNG 再上传，或者在拍照设置里把格式改成"兼容性最佳"。'));
+        reject(new Error(t('heicUnsupported')));
       };
       img.src = reader.result;
     };
     reader.onerror = ()=>{
-      reject(new Error('读取照片失败，请重试'));
+      reject(new Error(t('photoReadFail')));
     };
     reader.readAsDataURL(file);
   });
@@ -1340,22 +1602,22 @@ function renderFoodResultBlock(area, imgUrl, parsed, source, onRedo, onAdded, ge
         <div class="food-result">
           <div class="fname">${parsed.name}</div>
           <div class="macro-row">
-            <div class="macro"><b>${s.cal}</b>热量 cal</div>
-            <div class="macro"><b>${s.protein}g</b>蛋白质</div>
-            <div class="macro"><b>${s.carbs}g</b>碳水</div>
-            <div class="macro"><b>${s.fat}g</b>脂肪</div>
+            <div class="macro"><b>${s.cal}</b>${t('calLabel')}</div>
+            <div class="macro"><b>${s.protein}g</b>${t('proteinLabel')}</div>
+            <div class="macro"><b>${s.carbs}g</b>${t('carbsLabel')}</div>
+            <div class="macro"><b>${s.fat}g</b>${t('fatLabel')}</div>
           </div>
-          <div class="note">${parsed.note||''}${portionPct!==100?`（原份量估算：${Math.round(parsed.calories)} cal，按 ${portionPct}% 计算）`:''}</div>
+          <div class="note">${parsed.note||''}${portionPct!==100?t('originalEstimateNote',{cal:Math.round(parsed.calories), pct:portionPct}):''}</div>
           <div class="portion-block">
-            <div class="portion-label">这次实际吃了这份食物的多少？</div>
+            <div class="portion-label">${t('portionQuestion')}</div>
             <div class="portion-btns">
-              ${presetPcts.map(p=>`<button type="button" class="portion-btn ${p===portionPct?'active':''}" data-pct="${p}">${p===100?'全份':'约 '+p+'%'}</button>`).join('')}
-              <button type="button" class="portion-btn ${!isPreset?'active':''}" data-pct="custom">自定义%</button>
+              ${presetPcts.map(p=>`<button type="button" class="portion-btn ${p===portionPct?'active':''}" data-pct="${p}">${p===100?t('portionFull'):t('portionApprox',{p})}</button>`).join('')}
+              <button type="button" class="portion-btn ${!isPreset?'active':''}" data-pct="custom">${t('portionCustom')}</button>
             </div>
-            <input type="number" class="portion-custom-input" id="portionCustomInput" min="1" max="300" placeholder="例如 60" value="${!isPreset?portionPct:''}" style="display:${!isPreset?'block':'none'};">
+            <input type="number" class="portion-custom-input" id="portionCustomInput" min="1" max="300" placeholder="${t('portionCustomPlaceholder')}" value="${!isPreset?portionPct:''}" style="display:${!isPreset?'block':'none'};">
           </div>
-          <button id="addFoodResultBtn" style="margin-top:12px;">加入今天的记录</button>
-          ${onRedo ? `<button type="button" id="redoAnalyzeBtn" class="ghost" style="margin-top:12px;margin-left:8px;">改了说明？重新分析</button>` : ''}
+          <button id="addFoodResultBtn" style="margin-top:12px;">${t('addToTodayBtn')}</button>
+          ${onRedo ? `<button type="button" id="redoAnalyzeBtn" class="ghost" style="margin-top:12px;margin-left:8px;">${t('redoAnalyzeBtn')}</button>` : ''}
         </div>
       </div>`;
 
@@ -1385,7 +1647,7 @@ function renderFoodResultBlock(area, imgUrl, parsed, source, onRedo, onAdded, ge
       const s = scaled();
       const today = (getTargetDate ? getTargetDate() : null) || easternToday();
       const item = {
-        name: parsed.name + (portionPct!==100 ? `（${portionPct}%）` : ''),
+        name: parsed.name + (portionPct!==100 ? t('portionSuffix',{pct:portionPct}) : ''),
         cal: s.cal, protein: s.protein, carbs: s.carbs, fat: s.fat,
         source
       };
@@ -1398,7 +1660,7 @@ function renderFoodResultBlock(area, imgUrl, parsed, source, onRedo, onAdded, ge
           list.push({ date: today, wake: (list[list.length-1]?.wake)||PROFILE.startWeight, sleep:null, exercise:0, foodManual:0, foodItems:[item], auto:true });
         }
       });
-      area.innerHTML = `<div class="note">已加入 ${today} 的食物记录 ✓</div>`;
+      area.innerHTML = `<div class="note">${t('addedToDate',{date:today})}</div>`;
       if(onAdded) onAdded();
     });
 
@@ -1421,7 +1683,7 @@ async function addPhotoPreview(file){
   const card = document.createElement('div');
   card.id = 'photoCard-' + id;
   card.className = 'photo-item-card';
-  card.innerHTML = `<div class="loading" style="margin:0;"><span class="spinner"></span> 正在处理照片…</div>`;
+  card.innerHTML = `<div class="loading" style="margin:0;"><span class="spinner"></span> ${t('processingPhoto')}</div>`;
   container.appendChild(card);
 
   let imgUrl, base64, mediaType;
@@ -1440,9 +1702,9 @@ async function addPhotoPreview(file){
     <div class="food-preview">
       <img src="${imgUrl}" />
       <div class="food-result">
-        <div class="note" style="margin-top:0;">照片已选好，可以先在上面的"补充说明"里写清楚实际吃法，再点下面开始分析。这条说明会用在这张照片上。</div>
-        <button id="startAnalyzeBtn-${id}" style="margin-top:12px;">开始分析</button>
-        <button type="button" id="removePhotoBtn-${id}" class="ghost" style="margin-top:12px;margin-left:8px;">移除</button>
+        <div class="note" style="margin-top:0;">${t('photoReadyNote')}</div>
+        <button id="startAnalyzeBtn-${id}" style="margin-top:12px;">${t('startAnalyzeBtn')}</button>
+        <button type="button" id="removePhotoBtn-${id}" class="ghost" style="margin-top:12px;margin-left:8px;">${t('removeBtn')}</button>
       </div>
     </div>`;
 
@@ -1465,15 +1727,15 @@ async function runPhotoAnalysis(id){
     <div class="food-preview">
       <img src="${imgUrl}" />
       <div class="food-result">
-        <div class="loading"><span class="spinner"></span> 正在分析这份食物…</div>
-        ${noteText ? `<div class="note">已带上你的说明："${noteText}"</div>` : ''}
+        <div class="loading"><span class="spinner"></span> ${t('analyzingFood')}</div>
+        ${noteText ? `<div class="note">${t('notedText',{note:noteText})}</div>` : ''}
       </div>
     </div>`;
 
   try{
-    const promptText = "你是一名营养师。请识别这张图片里的食物，估算总热量(kcal)和蛋白质/碳水/脂肪克数。"
-      + (noteText ? `用户补充说明："${noteText}"——请把这条说明也纳入计算（比如实际份量、是否吃了全部、有没有去掉某些部分），估算要以说明为准，不要只按照片里的全部食物量估算。` : "请估算这一整份(照片里全部的量)的总热量。")
-      + " 只返回严格的 JSON，不要任何前言、解释或 markdown 代码块，格式为: {\"name\":\"食物名称(中文，简短)\",\"calories\":数字,\"protein\":数字,\"carbs\":数字,\"fat\":数字,\"note\":\"一句话说明估算依据，比如份量假设或者是怎么结合补充说明调整的\"}";
+    const promptText = t('aiPhotoPromptBase')
+      + (noteText ? t('aiPhotoPromptWithNote',{note:noteText}) : t('aiPhotoPromptNoNote'))
+      + t('aiPhotoJsonInstruction');
 
     const parsed = await callAiProxy([{
       role: "user",
@@ -1492,8 +1754,8 @@ async function runPhotoAnalysis(id){
       <div class="food-preview">
         <img src="${imgUrl}" />
         <div class="food-result">
-          <div class="err">分析失败：${err.message || '请重试'}</div>
-          <button id="retryAnalyzeBtn-${id}" style="margin-top:10px;">重试</button>
+          <div class="err">${t('analyzeFailPrefix')}${err.message || t('pleaseRetry')}</div>
+          <button id="retryAnalyzeBtn-${id}" style="margin-top:10px;">${t('retryBtn')}</button>
         </div>
       </div>`;
     document.getElementById('retryAnalyzeBtn-'+id).addEventListener('click', ()=>runPhotoAnalysis(id));
@@ -1538,7 +1800,7 @@ document.getElementById('toggleMoreEntryFields').addEventListener('click', funct
   const box = document.getElementById('moreEntryFields');
   const showing = box.style.display !== 'none';
   box.style.display = showing ? 'none' : 'block';
-  this.textContent = showing ? '+ 更多（手动补充食物热量）' : '− 收起';
+  this.textContent = showing ? t('moreFieldsToggleOpen') : t('moreFieldsToggleClose');
 });
 
 async function startApp(){
@@ -1561,8 +1823,8 @@ document.getElementById('authSignInBtn').addEventListener('click', async functio
   const statusEl = document.getElementById('authStatus');
   const email = document.getElementById('auth_email').value.trim();
   const password = document.getElementById('auth_password').value;
-  if(!email || !password){ statusEl.innerHTML = `<span class="err">邮箱和密码都要填</span>`; return; }
-  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> 登录中…</span>`;
+  if(!email || !password){ statusEl.innerHTML = `<span class="err">${t('authBothRequired')}</span>`; return; }
+  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> ${t('authSigningIn')}</span>`;
   const { error } = await sb.auth.signInWithPassword({ email, password });
   if(error){
     statusEl.innerHTML = `<span class="err">${error.message}</span>`;
@@ -1578,9 +1840,9 @@ document.getElementById('authSignUpBtn').addEventListener('click', async functio
   const statusEl = document.getElementById('authStatus');
   const email = document.getElementById('auth_email').value.trim();
   const password = document.getElementById('auth_password').value;
-  if(!email || !password){ statusEl.innerHTML = `<span class="err">邮箱和密码都要填</span>`; return; }
-  if(password.length < 6){ statusEl.innerHTML = `<span class="err">密码至少 6 位</span>`; return; }
-  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> 注册中…</span>`;
+  if(!email || !password){ statusEl.innerHTML = `<span class="err">${t('authBothRequired')}</span>`; return; }
+  if(password.length < 6){ statusEl.innerHTML = `<span class="err">${t('authPwTooShort')}</span>`; return; }
+  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> ${t('authSigningUp')}</span>`;
   const { data, error } = await sb.auth.signUp({ email, password });
   if(error){
     statusEl.innerHTML = `<span class="err">${error.message}</span>`;
@@ -1592,7 +1854,7 @@ document.getElementById('authSignUpBtn').addEventListener('click', async functio
     document.getElementById('authGate').style.display = 'none';
     await startApp();
   } else {
-    statusEl.innerHTML = `<span style="color:var(--sage-dark);">注册成功，去邮箱点一下确认链接，然后回来登录（如果 Supabase 项目关闭了邮箱确认，直接登录就行）。</span>`;
+    statusEl.innerHTML = `<span style="color:var(--sage-dark);">${t('authSignUpSuccess')}</span>`;
   }
 });
 
@@ -1642,7 +1904,7 @@ function fillExportTextarea(){
 
 document.getElementById('exportDataBtn').addEventListener('click', function(){
   fillExportTextarea();
-  document.getElementById('dataIOStatus').innerHTML = `<span style="color:var(--sage-dark);">已导出，复制上面的文字存起来（如果框里还是看不到文字，用旁边"复制到剪贴板"那个按钮）</span>`;
+  document.getElementById('dataIOStatus').innerHTML = `<span style="color:var(--sage-dark);">${t('exportedNote')}</span>`;
 });
 
 document.getElementById('copyDataBtn').addEventListener('click', async function(){
@@ -1650,17 +1912,17 @@ document.getElementById('copyDataBtn').addEventListener('click', async function(
   const text = fillExportTextarea();
   try{
     await navigator.clipboard.writeText(text);
-    statusEl.innerHTML = `<span style="color:var(--sage-dark);">✓ 已复制到剪贴板</span>`;
+    statusEl.innerHTML = `<span style="color:var(--sage-dark);">${t('copiedNote')}</span>`;
   }catch(e){
     try{
       const ta = document.getElementById('dataIOText');
       ta.focus(); ta.select();
       const ok = document.execCommand('copy');
       statusEl.innerHTML = ok
-        ? `<span style="color:var(--sage-dark);">✓ 已复制到剪贴板</span>`
-        : `<span class="err">自动复制不行，麻烦手动长按上面的文字框选复制</span>`;
+        ? `<span style="color:var(--sage-dark);">${t('copiedNote')}</span>`
+        : `<span class="err">${t('copyFailNote')}</span>`;
     }catch(e2){
-      statusEl.innerHTML = `<span class="err">自动复制不行，麻烦手动长按上面的文字框选复制</span>`;
+      statusEl.innerHTML = `<span class="err">${t('copyFailNote')}</span>`;
     }
   }
 });
@@ -1668,29 +1930,29 @@ document.getElementById('copyDataBtn').addEventListener('click', async function(
 document.getElementById('importDataBtn').addEventListener('click', function(){
   const statusEl = document.getElementById('dataIOStatus');
   const raw = document.getElementById('dataIOText').value.trim();
-  if(!raw){ statusEl.innerHTML = `<span class="err">先把之前导出的文字粘贴到上面的框里</span>`; return; }
+  if(!raw){ statusEl.innerHTML = `<span class="err">${t('importEmptyNote')}</span>`; return; }
   let payload;
   try{
     payload = JSON.parse(raw);
   }catch(e){
-    statusEl.innerHTML = `<span class="err">这段文字不是有效的 JSON，检查一下是不是完整复制的</span>`;
+    statusEl.innerHTML = `<span class="err">${t('importInvalidJson')}</span>`;
     return;
   }
   const importedEntries = Array.isArray(payload) ? payload : payload.entries;
   if(!Array.isArray(importedEntries)){
-    statusEl.innerHTML = `<span class="err">格式不对，找不到记录数组</span>`;
+    statusEl.innerHTML = `<span class="err">${t('importNoArray')}</span>`;
     return;
   }
 
   statusEl.innerHTML = `
-    <span>确定要导入 ${importedEntries.length} 天的记录吗？这会覆盖现在已有的数据。</span>
-    <button type="button" id="confirmImportBtn" style="margin-left:8px;">确认导入</button>
-    <button type="button" id="cancelImportBtn" class="ghost" style="margin-left:6px;">取消</button>`;
+    <span>${t('importConfirm',{n:importedEntries.length})}</span>
+    <button type="button" id="confirmImportBtn" style="margin-left:8px;">${t('importConfirmBtn')}</button>
+    <button type="button" id="cancelImportBtn" class="ghost" style="margin-left:6px;">${t('importCancelBtn')}</button>`;
 
   document.getElementById('cancelImportBtn').addEventListener('click', ()=>{ statusEl.innerHTML=''; });
 
   document.getElementById('confirmImportBtn').addEventListener('click', async ()=>{
-    statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> 正在导入…</span>`;
+    statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> ${t('importing')}</span>`;
     const ok = await importEntries(importedEntries);
     if(payload.goal){
       Object.assign(PROFILE, payload.goal);
@@ -1707,8 +1969,8 @@ document.getElementById('importDataBtn').addEventListener('click', function(){
       document.getElementById('trackerMain').style.display = '';
     }
     statusEl.innerHTML = ok
-      ? `<span style="color:var(--sage-dark);">✓ 导入成功</span>`
-      : `<span class="err">✗ 导入失败了，网络问题，麻烦再点一次</span>`;
+      ? `<span style="color:var(--sage-dark);">${t('importSuccess')}</span>`
+      : `<span class="err">${t('importFail')}</span>`;
   });
 });
 
@@ -1724,15 +1986,15 @@ document.getElementById('saveSetupBtn').addEventListener('click', async function
   const days = parseInt(document.getElementById('g_days').value, 10);
 
   if(isNaN(age) || age<=0 || isNaN(height) || height<=0 || isNaN(weight) || weight<=0){
-    statusEl.innerHTML = `<span class="err">个人资料数值不太对，检查一下年龄/身高/体重～</span>`;
+    statusEl.innerHTML = `<span class="err">${t('profileValuesBad')}</span>`;
     return;
   }
   if(isNaN(min) || isNaN(max) || isNaN(days) || days<=0 || min<0 || max<min){
-    statusEl.innerHTML = `<span class="err">目标数值不太对，检查一下最少/最多减重和天数～</span>`;
+    statusEl.innerHTML = `<span class="err">${t('goalValuesBad')}</span>`;
     return;
   }
 
-  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> 正在保存…</span>`;
+  statusEl.innerHTML = `<span class="loading"><span class="spinner"></span> ${t('setupSaving')}</span>`;
   const wasOnboarded = PROFILE.hasProfile && PROFILE.hasGoal;
 
   PROFILE.gender = gender;
@@ -1749,13 +2011,13 @@ document.getElementById('saveSetupBtn').addEventListener('click', async function
   const ok = okProfile && okGoal;
 
   if(ok){
-    statusEl.innerHTML = `<span style="color:var(--sage-dark);">✓ 已保存</span>`;
+    statusEl.innerHTML = `<span style="color:var(--sage-dark);">${t('setupSaved')}</span>`;
     document.getElementById('setupGate').style.display = 'none';
     document.getElementById('mainTabs').style.display = '';
     document.getElementById('trackerMain').style.display = '';
     render();
   } else {
-    statusEl.innerHTML = `<span class="err">✗ 保存失败了，麻烦再点一次保存</span>`;
+    statusEl.innerHTML = `<span class="err">${t('setupSaveFail')}</span>`;
   }
 });
 
@@ -1764,23 +2026,21 @@ document.getElementById('analyzeTextBtn').addEventListener('click', async functi
   const textEl = document.getElementById('foodText');
   const desc = textEl.value.trim();
   const area = document.getElementById('textAnalysisArea');
-  if(!desc){ area.innerHTML = `<div class="err">先描述一下吃了什么～</div>`; return; }
+  if(!desc){ area.innerHTML = `<div class="err">${t('textDescribeFirst')}</div>`; return; }
 
-  area.innerHTML = `<div class="loading" style="margin-top:12px;"><span class="spinner"></span> 正在分析…</div>`;
+  area.innerHTML = `<div class="loading" style="margin-top:12px;"><span class="spinner"></span> ${t('analyzing')}</div>`;
 
   try{
     const parsed = await callAiProxy([{
       role: "user",
-      content: `你是一名营养师。根据下面这段中文描述，识别里面提到的每一样食物，估算总热量(kcal)和总蛋白质/碳水/脂肪克数(把描述里的所有食物合并成一份总计)。只返回严格的 JSON，不要任何前言、解释或 markdown 代码块，格式为: {"name":"简短总结这顿吃了什么(中文)","calories":数字,"protein":数字,"carbs":数字,"fat":数字,"note":"一句话说明估算依据，比如份量假设"}
-
-描述：${desc}`
+      content: t('aiTextPromptTemplate', {desc})
     }]);
 
     renderFoodResultBlock(area, null, parsed, 'text', null, null, ()=>document.getElementById('foodTextDate').value);
     textEl.value = '';
 
   }catch(err){
-    area.innerHTML = `<div class="err">分析失败：${err.message || '请重试'}</div>`;
+    area.innerHTML = `<div class="err">${t('analyzeFailPrefix')}${err.message || t('pleaseRetry')}</div>`;
   }
 });
 
