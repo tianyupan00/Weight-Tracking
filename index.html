@@ -320,6 +320,11 @@
   }
   .inline-edit:hover{background:#EFEAE0;}
   .inline-edit:focus{outline:none;background:#fff;box-shadow:0 0 0 1px var(--sage);}
+  /* Number spinner arrows eat into the box's usable width — these inputs are
+     too narrow to spare it, so drop the native up/down control entirely. */
+  .inline-edit::-webkit-outer-spin-button,
+  .inline-edit::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .inline-edit[type="number"]{-moz-appearance:textfield;appearance:textfield;}
   .lc-grid .inline-edit{width:56px;text-align:right;font-family:inherit;}
   .fh-card .fh-main .fh-name{font-family:'Fraunces',serif;font-size:15px;margin-bottom:4px;}
   .fh-card .fh-main .fh-macros{font-size:11.5px;color:var(--ink-soft);}
@@ -350,6 +355,10 @@
   /* 16px prevents iOS Safari from auto-zooming the page on input focus */
   input, select, textarea{font-size:16px;}
   body.is-mobile input, body.is-mobile select{padding:10px 11px;}
+  /* The touch-friendly padding above was crushing the tiny inline-edit number
+     boxes (48px/38px wide) down to almost no usable width, clipping the
+     digits — restore their compact padding on mobile. */
+  body.is-mobile .inline-edit{padding:2px 4px;}
 
   body.is-mobile button{min-height:40px;}
 
@@ -1269,14 +1278,14 @@ function renderTable(){
         <div class="lc-deficit-badge ${def>=0?'pos':'neg'}">${def>=0?'+':''}${def} cal</div>
       </div>
       <div class="lc-weight-line">
-        ${t('lcWake')} <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.wake.toFixed(1)}" onchange="updateEntryField('${e.date}','wake',this.value)">kg
-        · ${t('lcSleep')} <input type="number" step="0.1" class="inline-edit" style="width:48px;" value="${e.sleep!=null && e.sleep!=='' ? Number(e.sleep).toFixed(1) : ''}" placeholder="—" onchange="updateEntryField('${e.date}','sleep',this.value)">kg
+        ${t('lcWake')} <input type="number" step="0.1" class="inline-edit" style="width:56px;text-align:right;" value="${e.wake.toFixed(1)}" onchange="updateEntryField('${e.date}','wake',this.value)"> kg
+        · ${t('lcSleep')} <input type="number" step="0.1" class="inline-edit" style="width:56px;text-align:right;" value="${e.sleep!=null && e.sleep!=='' ? Number(e.sleep).toFixed(1) : ''}" placeholder="—" onchange="updateEntryField('${e.date}','sleep',this.value)"> kg
         <span class="lc-change">${prev ? t('lcVsYesterday')+(change>=0?'+':'')+change.toFixed(1)+'kg' : ''}${sameDay!=null ? t('lcSameDay')+(sameDay>=0?'+':'')+sameDay.toFixed(1)+'kg' : ''}</span>
       </div>
       <div class="lc-stats-row">
         <div class="lc-stat"><span class="lc-stat-label">TDEE</span><span class="lc-stat-val">${exp}</span></div>
         <div class="lc-stat"><span class="lc-stat-label">${t('lcIntake')}</span><span class="lc-stat-val">${food}</span></div>
-        <div class="lc-stat"><span class="lc-stat-label">${t('lcExercise')}</span><span class="lc-stat-val"><input type="number" step="1" class="inline-edit" style="width:38px;text-align:center;" value="${e.exercise||0}" onchange="updateEntryField('${e.date}','exercise',this.value)"></span></div>
+        <div class="lc-stat"><span class="lc-stat-label">${t('lcExercise')}</span><span class="lc-stat-val"><input type="number" step="1" class="inline-edit" style="width:46px;text-align:center;" value="${e.exercise||0}" onchange="updateEntryField('${e.date}','exercise',this.value)"></span></div>
       </div>
     </div>`);
   });
