@@ -98,6 +98,12 @@
     display:flex; align-items:center; gap:8px;
   }
   .panel h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--coral);display:inline-block;}
+  .panel h2.collapsible{cursor:pointer;user-select:none;}
+  .panel h2 .chevron{
+    margin-left:auto;font-size:13px;color:var(--ink-soft);
+    transition:transform .2s ease;flex:0 0 auto;
+  }
+  .panel h2.collapsible.collapsed .chevron{transform:rotate(-90deg);}
 
   form.entry-form{
     display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px;
@@ -296,7 +302,11 @@
   .log-card .lc-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   .log-card .lc-stat{background:#FCFBF8;border:1px solid var(--line);border-radius:8px;padding:7px 8px;text-align:center;}
   .log-card .lc-stat-label{display:block;font-size:9.5px;color:var(--ink-soft);letter-spacing:.02em;margin-bottom:2px;}
-  .log-card .lc-stat-val{font-family:'Fraunces',serif;font-size:14px;font-weight:500;}
+  .log-card .lc-stat-val{font-family:'Fraunces',serif;font-size:14px;font-weight:500;line-height:1.3;}
+  .log-card .lc-stat-val input.inline-edit{
+    font-family:inherit;font-size:inherit;font-weight:inherit;color:inherit;
+    padding:0;margin:0;line-height:inherit;vertical-align:baseline;
+  }
   .log-card .lc-grid{display:none;} /* legacy — superseded by lc-stats-row above */
   .log-card .lc-deficit{display:none;} /* legacy — superseded by lc-deficit-badge above */
 
@@ -556,7 +566,8 @@
   </div>
 
   <div class="panel">
-    <h2><span class="dot"></span><span data-i18n="logTablePanelTitle">每日记录表</span></h2>
+    <h2 id="logTableToggle" class="collapsible"><span class="dot"></span><span data-i18n="logTablePanelTitle">每日记录表</span><span class="chevron">▾</span></h2>
+    <div id="logTableBody">
     <div class="table-scroll">
       <table id="logTable">
         <thead>
@@ -572,6 +583,7 @@
     </div>
     <div class="log-cards" id="logCards"></div>
     <div class="note" id="tableNote"></div>
+    </div>
   </div>
   </div>
 
@@ -1070,6 +1082,22 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if(page==='food') renderFoodHistory();
   });
 });
+
+// Collapsible "daily log" panel — state persists per device so a long
+// history doesn't force a scroll past it every time the page loads.
+const LOG_TABLE_COLLAPSED_KEY = 'logTableCollapsed';
+let logTableCollapsed = localStorage.getItem(LOG_TABLE_COLLAPSED_KEY) === '1';
+
+function applyLogTableCollapsed(){
+  document.getElementById('logTableBody').style.display = logTableCollapsed ? 'none' : '';
+  document.getElementById('logTableToggle').classList.toggle('collapsed', logTableCollapsed);
+}
+document.getElementById('logTableToggle').addEventListener('click', function(){
+  logTableCollapsed = !logTableCollapsed;
+  localStorage.setItem(LOG_TABLE_COLLAPSED_KEY, logTableCollapsed ? '1' : '0');
+  applyLogTableCollapsed();
+});
+applyLogTableCollapsed();
 
 async function loadEntries(){
   const r = await withRetry(()=>sbGetValue('entries'));
